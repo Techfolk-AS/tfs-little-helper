@@ -3,10 +3,10 @@ name: EOM Time Reporting Reminder
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *" # https://crontab.guru/#0_10_*_*_*
+    - cron: "0 7 * * *" # https://crontab.guru/#0_7_*_*_*
 
 env:
-  CHANNEL: C07A7FY6YR1
+  CHANNEL: CQGQJFW6B
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
