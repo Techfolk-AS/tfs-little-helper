@@ -1,23 +1,47 @@
 name: EOM Time Reporting Reminder
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 10 * * *" # https://crontab.guru/#0_10_*_*_*
+
+env:
+  CHANNEL: C07A7FY6YR1
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
   eom-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Run EOM Check Script
         run: ./eom-check.sh
 
-      - name: Send Slack Notification
+      - name: Send time reporting reminder
         if: success()
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: "End of Month Time Reporting Reminder: Please ensure your time reports are up to date."
-          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+                "blocks": [
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Hei alle sammen :pug-wave:",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Månedens siste arbeidsdag har kommet, og det er nå på tide å føre timene dine. Frist er klokken 12 i dag. :bufo-happy-hour:",
+                            "emoji": true
+                        }
+                    }
+                ]
+            }
