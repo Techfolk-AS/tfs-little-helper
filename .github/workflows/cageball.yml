@@ -1,30 +1,31 @@
+name: Cageball reminder
+
 on:
-    workflow_dispatch:
-    schedule:
-      - cron: "0 7 * * 1" # at 7:00 (9:00 our time due to UTC) on every Monday (https://crontab.guru/#0_7_*_*_1)
-  
-  env:
-    CHANNEL: C07KGUZDZPV
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-  
-  jobs:
-    cageb all-reminder:
-      runs-on: macos-latest
-      steps:
-        - name: Send Cageball reminder
-          uses: slackapi/slack-github-action@v1.26.0
-          with:
-            channel-id: ${{ env.CHANNEL }}
-            payload: |
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 1" # at 7:00 (9:00 our time due to UTC) on every Monday (https://crontab.guru/#0_7_*_*_1)
+
+env:
+  CHANNEL: C07KGUZDZPV
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  cageball-reminder:
+    runs-on: macos-latest
+    steps:
+      - name: Send Cageball reminder
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
                 {
-                    "blocks": [
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "Reminder: *Påmelding til Cageball*\nOnsdag, kl 19:10 - 20:00\n\nReager med :cage: for å melde deg på\nReager med :feelsbadman: om du ikke kan være med\n\nHusk å gi beskjed dersom du ikke kan være med allikevel."
-                            }
-                        }
-                    ]
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Reminder: *Påmelding til Cageball*\nOnsdag, kl 19:10 - 20:00\n\nReager med :cage: for å melde deg på\nReager med :feelsbadman: om du ikke kan være med\n\nHusk å gi beskjed dersom du ikke kan være med allikevel."
+                  }
                 }
-  
+              ]
+            }
