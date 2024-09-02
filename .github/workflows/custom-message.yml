@@ -17,18 +17,18 @@ jobs:
   custom-message:
     runs-on: macos-latest
     steps:
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        channel-id: ${{ inputs.channel }}
-        payload: |
-          {
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "${{ inputs.message }}"
+      - uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ inputs.channel }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ inputs.message }}"
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
