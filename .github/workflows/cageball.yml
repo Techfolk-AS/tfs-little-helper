@@ -6,7 +6,7 @@ on:
     - cron: "0 7 * * 1" # at 7:00 (9:00 our time due to UTC) on every Monday (https://crontab.guru/#0_7_*_*_1)
 
 env:
-  CHANNEL: C07KGUZDZPV
+  CHANNEL: C030UNRQ08M
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
