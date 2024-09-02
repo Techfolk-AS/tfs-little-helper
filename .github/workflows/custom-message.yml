@@ -1,0 +1,34 @@
+name: Send custom message
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        type: string
+        description: What is the message you'd like to convey?
+      channel:
+        type: string
+        description: Which channel would you like to send the message to?
+
+env:
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  custom-message:
+    runs-on: macos-latest
+    steps:
+      uses: slackapi/slack-github-action@v1.26.0
+      with:
+        channel-id: ${{ inputs.channel }}
+        payload: |
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ inputs.message }}"
+                }
+              }
+            ]
+          }
