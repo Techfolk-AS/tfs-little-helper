@@ -1,0 +1,31 @@
+name: Even reminder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * 5" # at 14:00 (16:00 our time due to UTC) on every Friday (https://crontab.guru/#0_14_*_*_5)
+
+env:
+  CHANNEL: C07A7FY6YR1
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  cageball-reminder:
+    runs-on: macos-latest
+    steps:
+      - name: Send Cageball reminder
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Denne videon er en ode til vår alles kjære @Even :even-laughing: \n\n https://youtu.be/1AnG04qnLqI"
+                  }
+                }
+              ]
+            }
