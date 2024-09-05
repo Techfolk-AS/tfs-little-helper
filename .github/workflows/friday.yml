@@ -40,8 +40,14 @@ jobs:
             message=$(jq -r ".[$index].message" .github/freitag.json)
             url=$(jq -r ".[$index].url" .github/freitag.json)
           fi
-          printf "message=%s\n" "$message" >> $GITHUB_OUTPUT
-          printf "url=%s\n" "$url" >> $GITHUB_OUTPUT
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          message="${message//$'\r'/'%0D'}"
+          url="${url//'%'/'%25'}"
+          url="${url//$'\n'/'%0A'}"
+          url="${url//$'\r'/'%0D'}"
+          echo "message=$message" >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
           echo "index=$index" >> $GITHUB_ENV
 
       - name: Update index
