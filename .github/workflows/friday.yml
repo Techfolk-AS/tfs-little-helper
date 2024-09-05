@@ -1,4 +1,4 @@
-name: Even reminder
+name: Friday reminder
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ env:
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
-  even-reminder:
+  friday-reminder:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
