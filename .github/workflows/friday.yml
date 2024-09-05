@@ -6,11 +6,11 @@ on:
       channel:
         type: string
         description: Which channel would you like to send the message to?
+        default: C07A7FY6YR1
   schedule:
     - cron: "0 14 * * 5" # at 14:00 (16:00 our time due to UTC) on every Friday (https://crontab.guru/#0_14_*_*_5)
 
 env:
-  CHANNEL: C07A7FY6YR1
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
@@ -18,32 +18,46 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Check if artifact exists
-        id: check_artifact
-        run: |
-          if curl --head --silent --fail --location "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | grep -q "current_index"; then
-            echo "exists=true" >> $GITHUB_ENV
-          else
-            echo "exists=false" >> $GITHUB_ENV
-
-      - name: Download current index
-        id: download_index
-        if: env.exists == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: current_index
-          path: .github
+        uses: actions/checkout@v4
 
       - name: Read current index
         id: read_index
         run: |
-          if [ ! -f .github/current_index.txt ]; then
-            echo "0" > .github/current_index.txt
+          if [ -f .github/current_index.txt ]; then
+            index=$(cat .github/current_index.txt)
+          else
+            index=0
           fi
-          current_index=$(cat .github/current_index.txt)
-          echo "index=$current_index" >> $GITHUB_OUTPUT
+          echo "index=$index" >> $GITHUB_ENV
+
+      - name: Read message from freitag.json
+        id: read_json
+        run: |
+          message=$(jq -r ".[$index].message // empty" .github/freitag.json)
+          url=$(jq -r ".[$index].url // empty" .github/freitag.json)
+          if [ -z "$message" ]; then
+            index=$(jq 'length - 1' .github/freitag.json)
+            message=$(jq -r ".[$index].message" .github/freitag.json)
+            url=$(jq -r ".[$index].url" .github/freitag.json)
+          fi
+          echo "message=$message" >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
+          echo "index=$index" >> $GITHUB_ENV
+
+      - name: Update index
+        if: github.event_name == 'schedule'
+        run: |
+          new_index=$((index + 1))
+          total_messages=$(jq 'length' .github/freitag.json)
+          if [ $new_index -ge $total_messages ]; then
+            new_index=0
+          fi
+          echo $new_index > .github/current_index.txt
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .github/current_index.txt
+          git commit -m "Update current index to $new_index"
+          git push
 
       - name: Read message from freitag.json
         id: read_json
@@ -53,22 +67,6 @@ jobs:
           url=$(jq -r ".[$index].url" .github/freitag.json)
           echo "message=$message" >> $GITHUB_OUTPUT
           echo "url=$url" >> $GITHUB_OUTPUT
-
-      - name: Update index
-        run: |
-          current_index=${{ steps.read_index.outputs.index }}
-          next_index=$((current_index + 1))
-          total_messages=$(jq length .github/freitag.json)
-          if [ $next_index -ge $total_messages ]; then
-            next_index=0
-          fi
-          echo $next_index > .github/current_index.txt
-
-      - name: Upload current index
-        uses: actions/upload-artifact@v4
-        with:
-          name: current_index
-          path: .github/current_index.txt
 
       - name: Send friday reminder
         uses: slackapi/slack-github-action@v1.26.0
