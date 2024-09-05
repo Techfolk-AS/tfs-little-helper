@@ -13,7 +13,51 @@ jobs:
   even-reminder:
     runs-on: macos-latest
     steps:
-      - name: Send Even reminder
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download current index
+        id: download_index
+        uses: actions/download-artifact@v2
+        with:
+          name: current_index
+          path: .github
+
+      - name: Read current index
+        id: read_index
+        run: |
+          if [ ! -f .github/current_index.txt ]; then
+            echo "0" > .github/current_index.txt
+          fi
+          current_index=$(cat .github/current_index.txt)
+          echo "index=$current_index" >> $GITHUB_OUTPUT
+
+      - name: Read message from freitag.json
+        id: read_json
+        run: |
+          index=${{ steps.read_index.outputs.index }}
+          message=$(jq -r ".[$index].message" .github/freitag.json)
+          url=$(jq -r ".[$index].url" .github/freitag.json)
+          echo "message=$message" >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
+
+      - name: Update index
+        run: |
+          current_index=${{ steps.read_index.outputs.index }}
+          next_index=$((current_index + 1))
+          total_messages=$(jq length .github/freitag.json)
+          if [ $next_index -ge $total_messages ]; then
+            next_index=0
+          fi
+          echo $next_index > .github/current_index.txt
+
+      - name: Upload current index
+        uses: actions/upload-artifact@v2
+        with:
+          name: current_index
+          path: .github/current_index.txt
+
+      - name: Send friday reminder
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ env.CHANNEL }}
@@ -24,7 +68,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Denne videoen er en ode til vår alles kjære <@U034US34QAH> :even-laughing: \n\n https://youtu.be/1AnG04qnLqI"
+                    "text": "${{ steps.read_json.outputs.message }} \n\n ${{ steps.read_json.outputs.url }}"
                   }
                 }
               ]
