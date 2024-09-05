@@ -40,6 +40,7 @@ jobs:
             message=$(jq -r ".[$index].message" .github/freitag.json)
             url=$(jq -r ".[$index].url" .github/freitag.json)
           fi
+          message="${message//$'\n'/\\n}"
           echo "message<<EOF" >> $GITHUB_OUTPUT
           echo "$message" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
