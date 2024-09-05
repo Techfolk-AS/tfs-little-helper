@@ -59,15 +59,6 @@ jobs:
           git commit -m "Update current index to $new_index"
           git push
 
-      - name: Read message from freitag.json
-        id: read_json
-        run: |
-          index=${{ steps.read_index.outputs.index }}
-          message=$(jq -r ".[$index].message" .github/freitag.json)
-          url=$(jq -r ".[$index].url" .github/freitag.json)
-          echo "message=$message" >> $GITHUB_OUTPUT
-          echo "url=$url" >> $GITHUB_OUTPUT
-
       - name: Send friday reminder
         uses: slackapi/slack-github-action@v1.26.0
         with:
