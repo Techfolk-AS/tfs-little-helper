@@ -20,6 +20,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Check if artifact exists
+        id: check_artifact
+        run: |
+          if curl --head --silent --fail --location "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | grep -q "current_index"; then
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+
       - name: Download current index
         id: download_index
         uses: actions/download-artifact@v4
