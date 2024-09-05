@@ -23,13 +23,14 @@ jobs:
       - name: Check if artifact exists
         id: check_artifact
         run: |
-          if curl --head --silent --fail --location "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | grep -q "current_index"; then
+          if curl --head --silent --fail --location "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | grep -q "current_index"; then
             echo "exists=true" >> $GITHUB_ENV
           else
             echo "exists=false" >> $GITHUB_ENV
 
       - name: Download current index
         id: download_index
+        if: env.exists == 'true'
         uses: actions/download-artifact@v4
         with:
           name: current_index
