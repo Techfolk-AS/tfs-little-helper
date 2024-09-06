@@ -65,7 +65,7 @@ jobs:
       - name: Send friday reminder
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: ${{ inputs.channel }}
+          channel-id: ${{ inputs.channel || 'CQ3EXM36X' }}
           payload: |
             {
               "blocks": [
