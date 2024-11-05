@@ -1,0 +1,39 @@
+name: Utlegg reminder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 5 * *" # “At 07:00 (09:00 our time due to runners using UTC) on day-of-month 5.” (https://crontab.guru/#0_7_5_*_*)
+
+env:
+  CHANNEL: C030UNRQ08M
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  utlegg-reminder:
+    runs-on: macos-latest
+    steps:
+      - name: Send utlegg reminder
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Det nærmer seg lønn! :dollar:",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Husk å sende utlegg til techfolk-as@bilag.fiken.no i dag for å få det med på kommende utbetaling. \n\n\n Utlegg som skal betales av kunde må tydelig markeres med _viderefaktureres_."
+                  }
+                }
+              ]
+            }
