@@ -1,0 +1,39 @@
+name: Juleferie reminder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 20 11 *" # “At 07:00 (09:00 our time due to runners using UTC) on day-of-month 20 in November.” (https://crontab.guru/#0_7_20_11_*)
+
+env:
+  CHANNEL: C030UNRQ08M
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  utlegg-reminder:
+    runs-on: macos-latest
+    steps:
+      - name: Send utlegg reminder
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Ferieavvikling :christmas_tree::techfolk-santa:",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Vi nærmer oss jul og nyttår, hurra! \n\n\n I den forbindelse har nok de fleste startet planleggingen av juleferien, kanskje til og med påske- og sommerferie neste år. Da kan det være greit å ha <https://www.notion.so/techfolk/Ferie-Frav-r-7103e6457d504dcbbe202f79e695fdab|Notion-siden om ferie og fravær> lett tilgjengelig. Der finner du alt du behøver å vite om ferieavvikling hos Techfolk. \n\n\n God ferie! :massage:"
+                  }
+                }
+              ]
+            }
