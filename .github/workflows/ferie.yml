@@ -3,14 +3,14 @@ name: Juleferie reminder
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 20 11 *" # “At 07:00 (09:00 our time due to runners using UTC) on day-of-month 20 in November.” (https://crontab.guru/#0_7_20_11_*)
+    - cron: "0 8 20 11 *" # “At 08:00 (10:00 our time due to runners using UTC) on day-of-month 20 in November.” (https://crontab.guru/#0_8_20_11_*)
 
 env:
-  CHANNEL: C030UNRQ08M
+  CHANNEL: CQGQJFW6B
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
-  utlegg-reminder:
+  ferie-reminder:
     runs-on: macos-latest
     steps:
       - name: Send utlegg reminder
