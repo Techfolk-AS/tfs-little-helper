@@ -6,7 +6,7 @@ on:
     - cron: "0 7 5 * *" # “At 07:00 (09:00 our time due to runners using UTC) on day-of-month 5.” (https://crontab.guru/#0_7_5_*_*)
 
 env:
-  CHANNEL: C030UNRQ08M
+  CHANNEL: CQGQJFW6B
   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 jobs:
