@@ -1,0 +1,70 @@
+name: Jlbrd msg
+
+on:
+  workflow_dispatch:
+
+env:
+  CHANNEL: CQGQJFW6B
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+jobs:
+  utlegg-reminder:
+    runs-on: macos-latest
+    steps:
+      - name: Send msg
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ env.CHANNEL }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":sparkles: *Et julebordsdikt til Techfolk* :sparkles:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "I Techfolks stue står bordene dekket,\nen flamme av latter og skinnende lys.\nHer samles vi, et mangfoldig spekter,\nav koder, ideer – vår fellesskapspris."
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Som grøten med smørøyet midt i,\ner vi der hvor det skjer, i vår tid.\nMed hender som skaper og tanker som flyr,\nbygger vi broer til fremtidens by."
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Julebordets klokke slår vennskapets slag,\ni Rebel-huset løfter vi tak.\nKinosal, bar, og en gaming-sesjon –\nvi feirer vårt virke, vår ambisjon."
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "For i Techfolk er magien kollektiv,\nfra prosjekter til punsj, vi finner vårt driv.\nSå la oss heve glasset i nattens prakt,\nfor folket, for koden, for julebordsakt!"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "plain_text",
+                      "text": "Forfatter: Techfolks lille hjelper. Inspirert av Halldis Moren Vesaas og med bistand fra ChatGPT",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
